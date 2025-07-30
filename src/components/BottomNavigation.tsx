@@ -22,7 +22,12 @@ const BottomNavigation = () => {
   
   const handleCreateClick = () => {
     if (requireAuth()) {
-      setShowBriefModal(true);
+      // Créer un post si on est sur la page d'accueil, sinon créer un brief
+      if (location.pathname === '/') {
+        setShowCreateModal(true);
+      } else {
+        setShowBriefModal(true);
+      }
     }
   };
 
