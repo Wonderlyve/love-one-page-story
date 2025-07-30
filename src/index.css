@@ -8,35 +8,53 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 350 100% 98%;
+    --foreground: 340 20% 20%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 340 20% 20%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 340 20% 20%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 350 85% 60%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 340 25% 95%;
+    --secondary-foreground: 340 20% 20%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 340 25% 95%;
+    --muted-foreground: 340 15% 50%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 350 100% 85%;
+    --accent-foreground: 340 20% 20%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 340 20% 90%;
+    --input: 340 20% 90%;
+    --ring: 350 85% 60%;
 
-    --radius: 0.5rem;
+    --radius: 1rem;
+
+    /* Love theme colors */
+    --love-primary: 350 85% 60%;
+    --love-secondary: 340 100% 70%;
+    --love-accent: 355 90% 85%;
+    --love-soft: 350 50% 95%;
+    
+    /* Gradients */
+    --gradient-love: linear-gradient(135deg, hsl(350, 85%, 60%), hsl(340, 100%, 70%));
+    --gradient-soft: linear-gradient(180deg, hsl(350, 50%, 98%), hsl(350, 100%, 96%));
+    --gradient-heart: radial-gradient(circle, hsl(350, 85%, 65%), hsl(340, 90%, 55%));
+    
+    /* Shadows */
+    --shadow-love: 0 10px 40px -10px hsl(350, 85%, 60%, 0.3);
+    --shadow-glow: 0 0 60px hsl(350, 85%, 60%, 0.4);
+    
+    /* Animations */
+    --transition-love: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 
     --sidebar-background: 0 0% 98%;
 
@@ -101,5 +119,53 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    background: var(--gradient-soft);
+  }
+}
+
+@layer components {
+  .love-text {
+    background: var(--gradient-love);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: heartbeat 2s ease-in-out infinite;
+    filter: drop-shadow(var(--shadow-love));
+  }
+  
+  .love-glow {
+    box-shadow: var(--shadow-glow);
+  }
+  
+  .floating-hearts {
+    animation: float 6s ease-in-out infinite;
+  }
+}
+
+@layer utilities {
+  @keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    33% { transform: translateY(-10px) rotate(2deg); }
+    66% { transform: translateY(5px) rotate(-1deg); }
+  }
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .animate-fade-in-up {
+    animation: fadeInUp 1s ease-out;
   }
 }
