@@ -61,18 +61,7 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				},
-				love: {
-					primary: 'hsl(var(--love-primary))',
-					secondary: 'hsl(var(--love-secondary))',
-					accent: 'hsl(var(--love-accent))',
-					soft: 'hsl(var(--love-soft))'
 				}
-			},
-			backgroundImage: {
-				'gradient-love': 'var(--gradient-love)',
-				'gradient-soft': 'var(--gradient-soft)',
-				'gradient-heart': 'var(--gradient-heart)'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
