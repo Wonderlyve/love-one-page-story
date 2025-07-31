@@ -13,6 +13,7 @@ export interface Debriefing {
   creator_username: string;
   likes: number;
   views: number;
+  comments: number;
   isLiked: boolean;
   created_at: string;
   channel_id: string;

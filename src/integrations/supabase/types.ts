@@ -241,6 +241,60 @@ export type Database = {
           },
         ]
       }
+      debriefing_comment_likes: {
+        Row: {
+          comment_id: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          comment_id: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          comment_id?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      debriefing_comments: {
+        Row: {
+          content: string
+          created_at: string
+          debriefing_id: string
+          id: string
+          likes: number
+          parent_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          debriefing_id: string
+          id?: string
+          likes?: number
+          parent_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          debriefing_id?: string
+          id?: string
+          likes?: number
+          parent_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       debriefing_likes: {
         Row: {
           created_at: string
@@ -286,6 +340,7 @@ export type Database = {
       debriefings: {
         Row: {
           channel_id: string | null
+          comments: number
           created_at: string
           creator_id: string
           description: string
@@ -301,6 +356,7 @@ export type Database = {
         }
         Insert: {
           channel_id?: string | null
+          comments?: number
           created_at?: string
           creator_id: string
           description: string
@@ -316,6 +372,7 @@ export type Database = {
         }
         Update: {
           channel_id?: string | null
+          comments?: number
           created_at?: string
           creator_id?: string
           description?: string
