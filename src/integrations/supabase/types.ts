@@ -262,6 +262,27 @@ export type Database = {
         }
         Relationships: []
       }
+      debriefing_views: {
+        Row: {
+          created_at: string
+          debriefing_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          debriefing_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          debriefing_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       debriefings: {
         Row: {
           channel_id: string | null
@@ -276,6 +297,7 @@ export type Database = {
           title: string
           updated_at: string
           video_url: string
+          views: number
         }
         Insert: {
           channel_id?: string | null
@@ -290,6 +312,7 @@ export type Database = {
           title: string
           updated_at?: string
           video_url: string
+          views?: number
         }
         Update: {
           channel_id?: string | null
@@ -304,6 +327,7 @@ export type Database = {
           title?: string
           updated_at?: string
           video_url?: string
+          views?: number
         }
         Relationships: []
       }
