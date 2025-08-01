@@ -524,7 +524,18 @@ const PredictionCard = ({ prediction, onOpenModal }: PredictionCardProps) => {
 
         {/* Match Info */}
         <div className="mb-3">
-          <div className="font-semibold text-lg text-gray-900 mb-2">{prediction.match}</div>
+          <div className="font-semibold text-lg text-gray-900 mb-2">
+            {prediction.match.length > 45 ? (
+              <>
+                {prediction.match.substring(0, 45)}...{" "}
+                <span className="text-green-600 font-medium cursor-pointer hover:underline">
+                  voir plus
+                </span>
+              </>
+            ) : (
+              prediction.match
+            )}
+          </div>
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center space-x-2">
               <span className="text-gray-600">Cote: {prediction.odds}</span>
