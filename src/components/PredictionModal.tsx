@@ -73,19 +73,34 @@ const PredictionModal = ({ prediction }: PredictionModalProps) => {
           </div>
         )}
 
-        {/* Liste des matchs en format vertical structuré */}
-        <div className="space-y-3">
+        {/* En-tête du tableau */}
+        <div className="bg-gray-50 border border-gray-200 rounded-t-lg p-3">
+          <div className="flex items-center">
+            <div className="flex-1 text-sm font-semibold text-gray-700 uppercase tracking-wide">
+              MATCH
+            </div>
+            <div className="w-24 text-center text-sm font-semibold text-gray-700 uppercase tracking-wide">
+              TYPE DE PARI
+            </div>
+            <div className="w-20 text-center text-sm font-semibold text-gray-700 uppercase tracking-wide">
+              PRONOSTIC
+            </div>
+          </div>
+        </div>
+
+        {/* Liste des matchs en format tableau */}
+        <div className="border-l border-r border-gray-200">
           {matches.map((match, index) => (
             <div key={match.id}>
-              <div className="bg-white border border-gray-200 rounded-lg p-4 max-h-[100px] flex items-center">
-                {/* Colonne gauche - Équipes empilées */}
-                <div className="flex-1 min-w-0 pr-3">
-                  <div className="font-medium text-gray-900 text-sm leading-5 max-h-10 overflow-hidden">
+              <div className="bg-white p-4 flex items-center min-h-[80px]">
+                {/* Colonne MATCH - Équipes */}
+                <div className="flex-1 min-w-0 pr-4">
+                  <div className="font-medium text-gray-900 text-sm leading-5">
                     <div className="line-clamp-2" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                       {match.teams}
                     </div>
                   </div>
-                  <div className="flex items-center space-x-2 text-xs text-gray-500 mt-1">
+                  <div className="flex items-center space-x-3 text-xs text-gray-500 mt-2">
                     <div className="flex items-center space-x-1">
                       <Trophy className="w-3 h-3" />
                       <span>{match.league}</span>
@@ -97,19 +112,19 @@ const PredictionModal = ({ prediction }: PredictionModalProps) => {
                   </div>
                 </div>
                 
-                {/* Colonne centrale - Type de pari */}
-                <div className="flex-shrink-0 px-3 text-center">
-                  <div className="text-xs font-light text-gray-600 uppercase tracking-wide">
+                {/* Colonne TYPE DE PARI */}
+                <div className="w-24 text-center px-2">
+                  <div className="text-sm font-medium text-gray-700">
                     1X2
                   </div>
-                  <div className="text-sm text-gray-500 mt-1">
-                    Cote: {match.odds}
+                  <div className="text-xs text-gray-500 mt-1">
+                    {match.odds}
                   </div>
                 </div>
                 
-                {/* Colonne droite - Badge du pronostic */}
-                <div className="flex-shrink-0 pl-3">
-                  <div className="w-12 h-12 bg-green-100 text-green-800 rounded-full flex items-center justify-center">
+                {/* Colonne PRONOSTIC */}
+                <div className="w-20 flex justify-center">
+                  <div className="w-10 h-10 bg-green-100 text-green-800 rounded-full flex items-center justify-center">
                     <span className="text-sm font-bold">{match.prediction}</span>
                   </div>
                 </div>
@@ -117,11 +132,14 @@ const PredictionModal = ({ prediction }: PredictionModalProps) => {
               
               {/* Ligne de séparation si ce n'est pas le dernier match */}
               {index < matches.length - 1 && (
-                <div className="h-px bg-gray-200 my-4"></div>
+                <div className="h-px bg-gray-200"></div>
               )}
             </div>
           ))}
         </div>
+
+        {/* Bordure du bas */}
+        <div className="border-b border-l border-r border-gray-200 rounded-b-lg h-1"></div>
 
         {/* Code de réservation - toujours affiché s'il existe */}
         {prediction.reservationCode && (
