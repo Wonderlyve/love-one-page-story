@@ -20,6 +20,7 @@ interface Match {
   odds: string;
   league: string;
   time: string;
+  betType: string;
 }
 
 interface CreatePredictionModalProps {
@@ -33,7 +34,7 @@ const CreatePredictionModal = ({ open, onOpenChange }: CreatePredictionModalProp
   const [betType, setBetType] = useState<'simple' | 'combine' | 'loto'>('simple');
   const [predictionBetType, setPredictionBetType] = useState<string>('1X2');
   const [matches, setMatches] = useState<Match[]>([
-    { id: 1, teams: '', prediction: '', odds: '', league: '', time: '' }
+    { id: 1, teams: '', prediction: '', odds: '', league: '', time: '', betType: '1X2' }
   ]);
   const [analysis, setAnalysis] = useState('');
   const [confidence, setConfidence] = useState(3);
@@ -53,7 +54,8 @@ const CreatePredictionModal = ({ open, onOpenChange }: CreatePredictionModalProp
       prediction: '',
       odds: '',
       league: '',
-      time: ''
+      time: '',
+      betType: '1X2'
     };
     setMatches([...matches, newMatch]);
   };
@@ -147,7 +149,7 @@ const CreatePredictionModal = ({ open, onOpenChange }: CreatePredictionModalProp
   };
 
   const resetForm = () => {
-    setMatches([{ id: 1, teams: '', prediction: '', odds: '', league: '', time: '' }]);
+    setMatches([{ id: 1, teams: '', prediction: '', odds: '', league: '', time: '', betType: '1X2' }]);
     setAnalysis('');
     setConfidence(3);
     setSport('');
@@ -353,14 +355,32 @@ const CreatePredictionModal = ({ open, onOpenChange }: CreatePredictionModalProp
                               className="text-sm"
                             />
                             
-                            <Input
-                              placeholder="Cote (ex: 2.10)"
-                              value={match.odds}
-                              onChange={(e) => updateMatch(match.id, 'odds', e.target.value)}
-                              type="number"
-                              step="0.01"
-                              className="text-sm"
-                            />
+                            <div className="grid grid-cols-2 gap-2">
+                              <Select value={match.betType} onValueChange={(value) => updateMatch(match.id, 'betType', value)}>
+                                <SelectTrigger className="text-sm">
+                                  <SelectValue placeholder="Type de pari" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="1X2">1X2</SelectItem>
+                                  <SelectItem value="Double Chance">Double Chance</SelectItem>
+                                  <SelectItem value="But">But</SelectItem>
+                                  <SelectItem value="Corner">Corner</SelectItem>
+                                  <SelectItem value="Carton">Carton</SelectItem>
+                                  <SelectItem value="Mi-temps">Mi-temps</SelectItem>
+                                  <SelectItem value="Handicap">Handicap</SelectItem>
+                                  <SelectItem value="Plus/Moins">Plus/Moins</SelectItem>
+                                </SelectContent>
+                              </Select>
+                              
+                              <Input
+                                placeholder="Cote (ex: 2.10)"
+                                value={match.odds}
+                                onChange={(e) => updateMatch(match.id, 'odds', e.target.value)}
+                                type="number"
+                                step="0.01"
+                                className="text-sm"
+                              />
+                            </div>
                           </div>
                         </div>
                       </Card>

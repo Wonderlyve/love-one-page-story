@@ -28,6 +28,7 @@ interface PredictionModalProps {
       odds: string;
       league: string;
       time: string;
+      betType?: string;
     }>;
   };
 }
@@ -41,7 +42,8 @@ const PredictionModal = ({ prediction }: PredictionModalProps) => {
       prediction: prediction.prediction,
       odds: prediction.odds,
       league: prediction.sport,
-      time: '20:00'
+      time: '20:00',
+      betType: prediction.betType
     }
   ];
 
@@ -73,73 +75,53 @@ const PredictionModal = ({ prediction }: PredictionModalProps) => {
           </div>
         )}
 
-        {/* En-tête du tableau */}
-        <div className="bg-gray-50 border border-gray-200 rounded-t-lg p-3">
-          <div className="flex items-center">
-            <div className="flex-1 text-sm font-semibold text-gray-700 uppercase tracking-wide">
-              MATCH
-            </div>
-            <div className="w-24 text-center text-sm font-semibold text-gray-700 uppercase tracking-wide">
-              TYPE DE PARI
-            </div>
-            <div className="w-20 text-center text-sm font-semibold text-gray-700 uppercase tracking-wide">
-              PRONOSTIC
-            </div>
-          </div>
-        </div>
-
-        {/* Liste des matchs en format tableau */}
-        <div className="border-l border-r border-gray-200">
+        {/* Liste des matchs avec affichage simplifié */}
+        <div className="space-y-3">
           {matches.map((match, index) => (
-            <div key={match.id}>
-              <div className="bg-white p-4 flex items-center min-h-[80px]">
-                {/* Colonne MATCH - Équipes */}
-                <div className="flex-1 min-w-0 pr-4">
-                  <div className="font-medium text-gray-900 text-sm leading-5">
-                    <div className="line-clamp-2" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                      {match.teams}
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-3 text-xs text-gray-500 mt-2">
-                    <div className="flex items-center space-x-1">
-                      <Trophy className="w-3 h-3" />
-                      <span>{match.league}</span>
-                    </div>
-                    <div className="flex items-center space-x-1">
-                      <Clock className="w-3 h-3" />
-                      <span>{match.time}</span>
-                    </div>
+            <div key={match.id} className="bg-white border border-gray-200 rounded-lg p-4">
+              {/* En-tête du match */}
+              <div className="flex items-center justify-between mb-3">
+                <div className="text-sm font-medium text-gray-600">
+                  {isMultipleBet ? `Match ${index + 1}` : 'Match'}
+                </div>
+                <div className="flex items-center space-x-2 text-xs text-gray-500">
+                  <Trophy className="w-3 h-3" />
+                  <span>{match.league}</span>
+                  <Clock className="w-3 h-3 ml-2" />
+                  <span>{match.time}</span>
+                </div>
+              </div>
+
+              {/* Équipes */}
+              <div className="mb-3">
+                <div className="font-semibold text-gray-900 text-base">
+                  {match.teams}
+                </div>
+              </div>
+
+              {/* Pronostic et type de pari */}
+              <div className="flex items-center justify-between bg-gray-50 rounded-lg p-3">
+                <div className="flex items-center space-x-3">
+                  <div className="text-sm text-gray-600">Type de pari:</div>
+                  <div className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm font-medium">
+                    {match.betType || '1X2'}
                   </div>
                 </div>
-                
-                {/* Colonne TYPE DE PARI */}
-                <div className="w-24 text-center px-2">
-                  <div className="text-sm font-medium text-gray-700">
-                    1X2
-                  </div>
-                  <div className="text-xs text-gray-500 mt-1">
-                    {match.odds}
-                  </div>
-                </div>
-                
-                {/* Colonne PRONOSTIC */}
-                <div className="w-20 flex justify-center">
-                  <div className="w-10 h-10 bg-green-100 text-green-800 rounded-full flex items-center justify-center">
-                    <span className="text-sm font-bold">{match.prediction}</span>
+                <div className="flex items-center space-x-3">
+                  <div className="text-sm text-gray-600">Pronostic:</div>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-8 h-8 bg-green-100 text-green-800 rounded-full flex items-center justify-center">
+                      <span className="text-sm font-bold">{match.prediction}</span>
+                    </div>
+                    <div className="text-sm font-medium text-gray-700">
+                      Cote: {match.odds}
+                    </div>
                   </div>
                 </div>
               </div>
-              
-              {/* Ligne de séparation si ce n'est pas le dernier match */}
-              {index < matches.length - 1 && (
-                <div className="h-px bg-gray-200"></div>
-              )}
             </div>
           ))}
         </div>
-
-        {/* Bordure du bas */}
-        <div className="border-b border-l border-r border-gray-200 rounded-b-lg h-1"></div>
 
         {/* Code de réservation - toujours affiché s'il existe */}
         {prediction.reservationCode && (
