@@ -73,42 +73,52 @@ const PredictionModal = ({ prediction }: PredictionModalProps) => {
           </div>
         )}
 
-        {/* Liste des matchs avec style similaire à l'image */}
+        {/* Liste des matchs en format vertical structuré */}
         <div className="space-y-3">
           {matches.map((match, index) => (
-            <div key={match.id} className="bg-white border-l-4 border-l-blue-500 p-4 shadow-sm">
-              {/* En-tête du match avec cote à droite */}
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex-1">
-                  <div className="font-semibold text-gray-900 text-base mb-2">
-                    {match.teams}
+            <div key={match.id}>
+              <div className="bg-white border border-gray-200 rounded-lg p-4 max-h-[100px] flex items-center">
+                {/* Colonne gauche - Équipes empilées */}
+                <div className="flex-1 min-w-0 pr-3">
+                  <div className="font-medium text-gray-900 text-sm leading-5 max-h-10 overflow-hidden">
+                    <div className="line-clamp-2" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                      {match.teams}
+                    </div>
                   </div>
-                  
-                  {/* Détails du match */}
-                  <div className="flex items-center space-x-4 text-sm text-gray-500 mb-3">
+                  <div className="flex items-center space-x-2 text-xs text-gray-500 mt-1">
                     <div className="flex items-center space-x-1">
-                      <Trophy className="w-4 h-4" />
+                      <Trophy className="w-3 h-3" />
                       <span>{match.league}</span>
                     </div>
                     <div className="flex items-center space-x-1">
-                      <Clock className="w-4 h-4" />
+                      <Clock className="w-3 h-3" />
                       <span>{match.time}</span>
                     </div>
                   </div>
-                  
-                  {/* Prédiction avec style vert */}
-                  <div className="flex items-center space-x-2">
-                    <span className="text-green-600 text-lg">⚽</span>
-                    <span className="text-green-600 font-medium">{match.prediction}</span>
+                </div>
+                
+                {/* Colonne centrale - Type de pari */}
+                <div className="flex-shrink-0 px-3 text-center">
+                  <div className="text-xs font-light text-gray-600 uppercase tracking-wide">
+                    1X2
+                  </div>
+                  <div className="text-sm text-gray-500 mt-1">
+                    Cote: {match.odds}
                   </div>
                 </div>
                 
-                {/* Cote à droite */}
-                <div className="text-right ml-4">
-                  <div className="text-sm text-gray-500 mb-1">Cote</div>
-                  <div className="font-bold text-blue-600 text-2xl">{match.odds}</div>
+                {/* Colonne droite - Badge du pronostic */}
+                <div className="flex-shrink-0 pl-3">
+                  <div className="w-12 h-12 bg-green-100 text-green-800 rounded-full flex items-center justify-center">
+                    <span className="text-sm font-bold">{match.prediction}</span>
+                  </div>
                 </div>
               </div>
+              
+              {/* Ligne de séparation si ce n'est pas le dernier match */}
+              {index < matches.length - 1 && (
+                <div className="h-px bg-gray-200 my-4"></div>
+              )}
             </div>
           ))}
         </div>
