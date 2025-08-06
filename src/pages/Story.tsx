@@ -22,6 +22,7 @@ const Story = () => {
   const [isPaused, setIsPaused] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const progressBarRef = useRef<HTMLDivElement | null>(null);
   const { user } = useAuth();
   const navigate = useNavigate();
   
@@ -78,8 +79,19 @@ const Story = () => {
     }
   }, [currentStory?.id, user]);
 
-  // Démarrer le timer quand la story change ou quand la pause change
+  // Gérer la barre de progression et le timer
   useEffect(() => {
+    if (progressBarRef.current) {
+      progressBarRef.current.classList.remove('story-progress-bar');
+      if (isPaused) {
+        progressBarRef.current.classList.add('paused');
+      } else {
+        progressBarRef.current.classList.remove('paused');
+        // Force un reflow pour redémarrer l'animation
+        progressBarRef.current.offsetHeight;
+        progressBarRef.current.classList.add('story-progress-bar');
+      }
+    }
     startTimer();
   }, [currentStoryIndex, isPaused, currentStory]);
 
@@ -286,22 +298,10 @@ const Story = () => {
           )}
         </div>
 
-        {/* Barre de progression */}
+        {/* Barre de progression unique pour la story en cours */}
         <div className="absolute top-1 left-0 right-0 z-20 px-2">
-          <div className="flex space-x-1">
-            {stories.map((_, index) => (
-              <div
-                key={index}
-                className="flex-1 h-0.5 bg-white/30 rounded-full overflow-hidden"
-              >
-                <div
-                  className={`h-full bg-white transition-all duration-100 ${
-                    index < currentStoryIndex ? 'w-full' : 
-                    index === currentStoryIndex ? 'w-full animate-progress' : 'w-0'
-                  }`}
-                />
-              </div>
-            ))}
+          <div className="w-full h-0.5 bg-white/30 rounded-full overflow-hidden">
+            <div ref={progressBarRef} className="h-full bg-white rounded-full" />
           </div>
         </div>
 

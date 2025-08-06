@@ -116,7 +116,7 @@
   }
 }
 
-@keyframes progress {
+@keyframes storyProgress {
   from {
     width: 0%;
   }
@@ -125,6 +125,11 @@
   }
 }
 
-.animate-progress {
-  animation: progress 6s linear forwards;
+.story-progress-bar {
+  animation: storyProgress 6s linear forwards;
+  animation-play-state: running;
+}
+
+.story-progress-bar.paused {
+  animation-play-state: paused;
 }
