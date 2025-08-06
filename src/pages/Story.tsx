@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Heart, MessageCircle, Share, MoreHorizontal, Plus, Search, Play, Menu, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -19,6 +19,9 @@ const Story = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [sideMenuOpen, setSideMenuOpen] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
   const { user } = useAuth();
   const navigate = useNavigate();
   
@@ -27,6 +30,46 @@ const Story = () => {
   const currentStory = stories[currentStoryIndex];
   const { comments } = useStoryComments(currentStory?.id || '');
 
+  // Fonction pour passer à la story suivante
+  const goToNextStory = () => {
+    if (currentStoryIndex < stories.length - 1) {
+      setCurrentStoryIndex(currentStoryIndex + 1);
+    } else {
+      // Retour à la première story ou fermer
+      setCurrentStoryIndex(0);
+    }
+  };
+
+  // Fonction pour démarrer le timer d'auto-progression
+  const startTimer = () => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+
+    if (!isPaused && currentStory) {
+      let duration = 6000; // 6 secondes par défaut pour les images
+
+      if (currentStory.media_type === 'video' && videoRef.current) {
+        // Pour les vidéos, utiliser la durée réelle (max 60 secondes)
+        const videoDuration = Math.min(videoRef.current.duration * 1000, 60000);
+        duration = videoDuration || 6000;
+      }
+
+      timerRef.current = setTimeout(() => {
+        goToNextStory();
+      }, duration);
+    }
+  };
+
+  // Nettoyage du timer
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, []);
+
   // Suivre les vues et les likes pour la story actuelle
   useEffect(() => {
     if (currentStory && user) {
@@ -34,6 +77,16 @@ const Story = () => {
       checkIfLiked(currentStory.id).then(setIsLiked);
     }
   }, [currentStory?.id, user]);
+
+  // Démarrer le timer quand la story change ou quand la pause change
+  useEffect(() => {
+    startTimer();
+  }, [currentStoryIndex, isPaused, currentStory]);
+
+  // Gérer la pause/lecture au clic
+  const handleStoryClick = () => {
+    setIsPaused(!isPaused);
+  };
 
   const handleLike = async () => {
     if (!currentStory || !user) {
@@ -196,16 +249,19 @@ const Story = () => {
 
       {/* Contenu Story */}
       <div className="relative bg-black" style={{ height: 'calc(100vh - 73px - 80px)' }}>
-        {/* Média principal */}
-        <div className="absolute inset-0">
+        {/* Média principal avec zone cliquable pour pause/lecture */}
+        <div className="absolute inset-0" onClick={handleStoryClick}>
           {currentStory?.media_url ? (
             currentStory.media_type === 'video' ? (
               <video 
+                ref={videoRef}
                 className="w-full h-full object-cover" 
-                autoPlay 
-                loop 
+                autoPlay={!isPaused}
+                loop={false}
                 muted
                 src={currentStory.media_url}
+                onLoadedMetadata={startTimer}
+                onEnded={goToNextStory}
               />
             ) : (
               <img 
@@ -219,6 +275,34 @@ const Story = () => {
               <Play className="w-16 h-16 text-white/70" />
             </div>
           )}
+          
+          {/* Indicateur de pause */}
+          {isPaused && (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-16 h-16 bg-black/50 rounded-full flex items-center justify-center">
+                <Play className="w-8 h-8 text-white" />
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Barre de progression */}
+        <div className="absolute top-1 left-0 right-0 z-20 px-2">
+          <div className="flex space-x-1">
+            {stories.map((_, index) => (
+              <div
+                key={index}
+                className="flex-1 h-0.5 bg-white/30 rounded-full overflow-hidden"
+              >
+                <div
+                  className={`h-full bg-white transition-all duration-100 ${
+                    index < currentStoryIndex ? 'w-full' : 
+                    index === currentStoryIndex ? 'w-full animate-progress' : 'w-0'
+                  }`}
+                />
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Overlay supérieur */}
