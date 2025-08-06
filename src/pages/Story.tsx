@@ -274,12 +274,29 @@ const Story = () => {
                 src={currentStory.media_url}
                 onLoadedMetadata={startTimer}
                 onEnded={goToNextStory}
+                onError={(e) => {
+                  console.error('Video error:', e);
+                  console.log('Video URL:', currentStory.media_url);
+                }}
               />
             ) : (
               <img 
                 className="w-full h-full object-cover" 
                 src={currentStory.media_url} 
-                alt="Story content" 
+                alt="Story content"
+                onError={(e) => {
+                  console.error('Image error:', e);
+                  console.log('Image URL:', currentStory.media_url);
+                  // Afficher une image de fallback si l'image ne se charge pas
+                  e.currentTarget.style.display = 'none';
+                  e.currentTarget.parentElement?.querySelector('.fallback-content')?.classList.remove('hidden');
+                }}
+                onLoad={() => {
+                  // Image chargée avec succès, démarrer le timer
+                  if (!isPaused) {
+                    startTimer();
+                  }
+                }}
               />
             )
           ) : (
@@ -287,6 +304,14 @@ const Story = () => {
               <Play className="w-16 h-16 text-white/70" />
             </div>
           )}
+          
+          {/* Contenu de fallback si l'image ne se charge pas */}
+          <div className="fallback-content hidden w-full h-full bg-gradient-to-br from-purple-900 via-pink-800 to-orange-600 flex items-center justify-center flex-col">
+            <Play className="w-16 h-16 text-white/70 mb-4" />
+            <p className="text-white text-center px-4">
+              {currentStory?.content || 'Contenu indisponible'}
+            </p>
+          </div>
           
           {/* Indicateur de pause */}
           {isPaused && (

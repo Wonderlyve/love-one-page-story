@@ -43,10 +43,34 @@ export const CreateStoryModal: React.FC<CreateStoryModalProps> = ({ open, onOpen
       let mediaUrl = '';
       let mediaType: 'image' | 'video' | undefined;
 
-      // Simuler l'upload du fichier (ici vous pourriez uploader vers Supabase Storage)
+      // Upload du fichier vers Supabase Storage
       if (mediaFile) {
-        // Dans un vrai projet, vous uploaderiez le fichier vers Supabase Storage
-        mediaUrl = mediaPreview || '';
+        const { supabase } = await import('@/integrations/supabase/client');
+        const { data: userData } = await supabase.auth.getUser();
+        
+        if (!userData.user) {
+          toast.error('Vous devez être connecté');
+          return;
+        }
+
+        const fileExt = mediaFile.name.split('.').pop();
+        const fileName = `${userData.user.id}/${Date.now()}.${fileExt}`;
+        
+        const { data, error } = await supabase.storage
+          .from('stories')
+          .upload(fileName, mediaFile);
+
+        if (error) {
+          console.error('Upload error:', error);
+          toast.error('Erreur lors de l\'upload du fichier');
+          return;
+        }
+
+        const { data: publicUrl } = supabase.storage
+          .from('stories')
+          .getPublicUrl(fileName);
+          
+        mediaUrl = publicUrl.publicUrl;
         mediaType = mediaFile.type.startsWith('video/') ? 'video' : 'image';
       }
 
