@@ -35,6 +35,11 @@ const BottomNavigation = () => {
   };
 
   const handleCreateBrief = async (briefData: any) => {
+    if (!user) {
+      toast.error('Vous devez être connecté pour créer un brief');
+      return;
+    }
+
     try {
       setShowBriefModal(false);
       setShowLoadingModal(true);
@@ -47,13 +52,17 @@ const BottomNavigation = () => {
         setShowSuccessModal(true);
         // Rediriger vers la page Brief si on n'y est pas déjà
         if (location.pathname !== '/brief') {
-          navigate('/brief');
+          setTimeout(() => {
+            navigate('/brief');
+          }, 1500); // Délai pour voir le message de succès
         }
+      } else {
+        toast.error('Erreur lors de la publication du brief');
       }
-    } catch (error) {
+    } catch (error: any) {
       setShowLoadingModal(false);
       console.error('Erreur lors de la création du brief:', error);
-      toast.error('Erreur lors de la publication du brief');
+      toast.error(error?.message || 'Erreur lors de la publication du brief');
     }
   };
 
@@ -70,7 +79,7 @@ const BottomNavigation = () => {
     { icon: Crown, label: 'Canaux', active: false, action: () => navigate('/channels') },
     { icon: Plus, label: '', active: false, action: handleCreateClick, isCenter: true },
     { icon: Video, label: 'Brief', active: false, action: () => navigate('/brief') },
-    { icon: User, label: user ? 'Profil' : 'Connexion', active: false, action: handleProfileClick },
+    { icon: User, label: 'Story', active: false, action: () => navigate('/story') },
   ];
 
   return (
