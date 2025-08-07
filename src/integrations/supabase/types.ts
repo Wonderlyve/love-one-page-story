@@ -175,31 +175,40 @@ export type Database = {
         Row: {
           created_at: string
           creator_id: string
+          currency: string
           description: string | null
           id: string
+          image_url: string | null
           is_private: boolean
           name: string
           price: number
+          subscription_code: string | null
           updated_at: string
         }
         Insert: {
           created_at?: string
           creator_id: string
+          currency?: string
           description?: string | null
           id?: string
+          image_url?: string | null
           is_private?: boolean
           name: string
           price?: number
+          subscription_code?: string | null
           updated_at?: string
         }
         Update: {
           created_at?: string
           creator_id?: string
+          currency?: string
           description?: string | null
           id?: string
+          image_url?: string | null
           is_private?: boolean
           name?: string
           price?: number
+          subscription_code?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -843,6 +852,39 @@ export type Database = {
           id?: string
           story_id?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      update_posts: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          update_url: string
+          updated_at: string
+          user_id: string
+          version_name: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          update_url: string
+          updated_at?: string
+          user_id: string
+          version_name: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          update_url?: string
+          updated_at?: string
+          user_id?: string
+          version_name?: string
         }
         Relationships: []
       }
