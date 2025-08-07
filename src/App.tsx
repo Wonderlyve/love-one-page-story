@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ThemeProvider } from "@/contexts/ThemeContext";
+import useScrollToTop from "@/hooks/useScrollToTop";
 import Index from "./pages/Index";
 import Profile from "./pages/Profile";
 import LiveStreams from "./pages/LiveStreams";
@@ -47,6 +48,7 @@ const App = () => (
           <Sonner />
           <UpdateChecker />
           <BrowserRouter>
+            <ScrollToTopProvider />
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
@@ -75,5 +77,11 @@ const App = () => (
     </ThemeProvider>
   </QueryClientProvider>
 );
+
+// Component to handle scroll to top on route change
+const ScrollToTopProvider = () => {
+  useScrollToTop();
+  return null;
+};
 
 export default App;
