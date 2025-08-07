@@ -369,8 +369,8 @@ const Channels = () => {
                         </div>
                       )}
                       {getUnreadCountForChannel(channel.id) > 0 && (
-                        <div className="absolute -top-2 -right-2 bg-red-500 rounded-full min-w-[20px] h-5 flex items-center justify-center">
-                          <span className="text-white text-xs font-medium px-1">
+                        <div className="absolute -top-3 -right-3 bg-red-500 rounded-full min-w-[24px] h-6 flex items-center justify-center shadow-lg border-2 border-white z-10">
+                          <span className="text-white text-xs font-bold px-1">
                             {getUnreadCountForChannel(channel.id) > 99 ? '99+' : getUnreadCountForChannel(channel.id)}
                           </span>
                         </div>
