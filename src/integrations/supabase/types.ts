@@ -513,6 +513,7 @@ export type Database = {
       }
       notifications: {
         Row: {
+          channel_id: string | null
           content: string
           created_at: string
           from_user_id: string | null
@@ -523,6 +524,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          channel_id?: string | null
           content: string
           created_at?: string
           from_user_id?: string | null
@@ -533,6 +535,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          channel_id?: string | null
           content?: string
           created_at?: string
           from_user_id?: string | null
@@ -542,7 +545,15 @@ export type Database = {
           type?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "notifications_channel_id_fkey"
+            columns: ["channel_id"]
+            isOneToOne: false
+            referencedRelation: "channels"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       post_likes: {
         Row: {

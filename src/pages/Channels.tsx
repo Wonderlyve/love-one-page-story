@@ -16,6 +16,7 @@ import BottomNavigation from '@/components/BottomNavigation';
 import ChannelChat from '@/components/ChannelChat';
 import { useAuth } from '@/hooks/useAuth';
 import { useChannels, Channel } from '@/hooks/useChannels';
+import { useChannelNotifications } from '@/hooks/useChannelNotifications';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
@@ -32,6 +33,7 @@ const Channels = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { channels, loading, createChannel: createChannelHook, subscribeToChannel, deleteChannel: deleteChannelHook, isSubscribed } = useChannels();
+  const { getUnreadCountForChannel, markChannelNotificationsAsRead } = useChannelNotifications();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [selectedChannel, setSelectedChannel] = useState<Channel | null>(null);
   const [showWarningDialog, setShowWarningDialog] = useState(false);
@@ -110,6 +112,9 @@ const Channels = () => {
   };
 
   const joinChannel = async (channel: Channel) => {
+    // Marquer les notifications de ce canal comme lues
+    await markChannelNotificationsAsRead(channel.id);
+    
     // Les créateurs peuvent accéder directement à leurs canaux
     if (user?.id === channel.creator_id) {
       setSelectedChannel(channel);
@@ -351,7 +356,7 @@ const Channels = () => {
                 >
                   <div className="flex items-start space-x-4">
                     {/* Channel Thumbnail */}
-                    <div className="w-16 h-20 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden">
+                    <div className="w-16 h-20 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden relative">
                       {channel.image_url ? (
                         <img 
                           src={channel.image_url} 
@@ -361,6 +366,13 @@ const Channels = () => {
                       ) : (
                         <div className="w-full h-full bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center">
                           <Lock className="w-6 h-6 text-white" />
+                        </div>
+                      )}
+                      {getUnreadCountForChannel(channel.id) > 0 && (
+                        <div className="absolute -top-2 -right-2 bg-red-500 rounded-full min-w-[20px] h-5 flex items-center justify-center">
+                          <span className="text-white text-xs font-medium px-1">
+                            {getUnreadCountForChannel(channel.id) > 99 ? '99+' : getUnreadCountForChannel(channel.id)}
+                          </span>
                         </div>
                       )}
                     </div>
