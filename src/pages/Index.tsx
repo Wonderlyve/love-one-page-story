@@ -159,6 +159,7 @@ const Index = () => {
     return {
     id: post.id,
     user_id: post.user_id, // Ajout du user_id pour la détection du propriétaire
+    post_type: post.post_type || 'prediction', // Ajout du type de post
     user: {
       username: displayUsername,
       avatar: displayAvatar,
@@ -212,22 +213,28 @@ const Index = () => {
             
             <div className="flex items-center space-x-2">
               {user && <NotificationIcon />}
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handleProfileClick}
-                className="text-white hover:bg-white/20"
-              >
-                {user ? (
+              {user ? (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handleProfileClick}
+                  className="text-white hover:bg-white/20"
+                >
                   <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
                     <span className="text-white font-bold text-sm">
                       {user.email?.charAt(0).toUpperCase()}
                     </span>
                   </div>
-                ) : (
-                  <User className="h-6 w-6" />
-                )}
-              </Button>
+                </Button>
+              ) : (
+                <Button
+                  variant="ghost"
+                  onClick={handleProfileClick}
+                  className="text-white hover:bg-white/20 px-3 py-2 text-sm"
+                >
+                  Se connecter
+                </Button>
+              )}
             </div>
           </div>
         </div>
