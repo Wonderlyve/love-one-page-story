@@ -40,10 +40,13 @@ const SimpleUpdatePost = () => {
 
       setUpdatePost(activePost);
       
-      // Vérifier si l'utilisateur a déjà refusé ce post
+      // Vérifier si l'utilisateur a déjà refusé ce post spécifique
       const dismissedPost = localStorage.getItem('dismissed_update_post');
       if (dismissedPost === activePost.id) {
         setIsDismissed(true);
+      } else {
+        // Nouveau post ou pas encore ignoré, s'assurer qu'il est visible
+        setIsDismissed(false);
       }
     } catch (error) {
       console.error('Erreur lors de la vérification des posts de mise à jour:', error);
