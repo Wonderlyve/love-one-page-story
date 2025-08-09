@@ -26,9 +26,17 @@ const SimpleUpdatePost = () => {
         .from('update_posts')
         .select('*')
         .eq('is_active', true)
-        .single();
+        .maybeSingle();
 
-      if (error || !activePost) return;
+      if (error) {
+        console.error('Erreur lors de la vérification des posts de mise à jour:', error);
+        return;
+      }
+
+      if (!activePost) {
+        console.log('Aucun post de mise à jour actif trouvé');
+        return;
+      }
 
       setUpdatePost(activePost);
       
