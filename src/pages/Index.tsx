@@ -14,6 +14,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import PostSkeleton from '@/optimization/PostSkeleton';
 import { supabase } from '@/integrations/supabase/client';
 import SimpleUpdatePost from '@/components/SimpleUpdatePost';
+import { useVideoOptimization } from '@/hooks/useVideoOptimization';
+import { useMemo } from 'react';
 
 const Index = () => {
   const [sideMenuOpen, setSideMenuOpen] = useState(false);
@@ -29,8 +31,37 @@ const Index = () => {
   const navigate = useNavigate();
   const location = useLocation();
   
+  // Extraire les URLs des vidéos pour l'optimisation
+  const videoUrls = useMemo(() => 
+    posts
+      .map(post => post.video_url)
+      .filter((video): video is string => Boolean(video)),
+    [posts]
+  );
+
+  // Initialiser l'optimisation vidéo
+  const { preloadVideos } = useVideoOptimization({
+    videos: videoUrls,
+    currentIndex: 0,
+    autoPreload: true,
+    enablePrefetch: true
+  });
+  
   // Gérer l'affichage d'un post spécifique depuis une notification
   const [highlightedPostId, setHighlightedPostId] = useState<string | null>(null);
+
+  // Précharger les vidéos importantes au démarrage
+  useEffect(() => {
+    if (videoUrls.length > 0) {
+      // Précharger les 3 premières vidéos avec haute priorité
+      const priorityVideos = videoUrls.slice(0, 3);
+      preloadVideos(priorityVideos, 'high');
+      
+      // Précharger les 3 suivantes avec priorité moyenne
+      const mediumPriorityVideos = videoUrls.slice(3, 6);
+      preloadVideos(mediumPriorityVideos, 'medium');
+    }
+  }, [videoUrls, preloadVideos]);
 
   // Charger les posts masqués et utilisateurs bloqués
   useEffect(() => {
@@ -323,7 +354,10 @@ const Index = () => {
       </div>
 
       {/* Content */}
-      <div className="max-w-2xl mx-auto px-4 py-4 pb-20 space-y-4">
+      <div 
+        className="max-w-2xl mx-auto px-4 py-4 pb-20 space-y-4"
+        data-prefetch-videos={JSON.stringify(videoUrls.slice(0, 5))}
+      >
         {/* Update Notification Post */}
         <SimpleUpdatePost />
         
