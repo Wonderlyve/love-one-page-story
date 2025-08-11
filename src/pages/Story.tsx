@@ -14,6 +14,10 @@ import { useStories } from '@/hooks/useStories';
 import { useStoryComments } from '@/hooks/useStoryComments';
 import { CreateStoryModal } from '@/components/CreateStoryModal';
 import { toast } from 'sonner';
+import { useVideoControl } from '@/hooks/useVideoControl';
+import { videoControlManager } from '@/optimization/VideoControlManager';
+
+import StoryVideo from '@/components/StoryVideo';
 
 const Story = () => {
   const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
@@ -24,11 +28,17 @@ const Story = () => {
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const videoRef = useRef<HTMLVideoElement | null>(null);
   const progressBarRef = useRef<HTMLDivElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const { user } = useAuth();
   const navigate = useNavigate();
+  
+  // Nettoyer le gestionnaire vidéo au démontage
+  useEffect(() => {
+    return () => {
+      videoControlManager.cleanup();
+    };
+  }, []);
   
   const { stories, loading, likeStory, unlikeStory, checkIfLiked, addStoryView, deleteStory } = useStories();
   
@@ -146,10 +156,8 @@ const Story = () => {
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.hidden) {
-        // Arrêter la vidéo quand l'utilisateur change d'app ou verrouille l'écran
-        if (currentStory?.media_type === 'video' && videoRef.current) {
-          videoRef.current.pause();
-        }
+        // Mettre en pause toutes les vidéos quand l'utilisateur change d'app
+        videoControlManager.pauseAll();
         setIsPaused(true);
       }
     };
@@ -171,18 +179,10 @@ const Story = () => {
       checkIfLiked(currentStory.id).then(setIsLiked);
     }
 
-    // Autoplay vidéo après transition
-    if (currentStory?.media_type === 'video' && videoRef.current && !isPaused) {
-      const playVideo = async () => {
-        try {
-          await videoRef.current?.play();
-        } catch (error) {
-          console.error('Erreur autoplay:', error);
-        }
-      };
-      
-      // Délai pour s'assurer que la transition scroll-snap est terminée
-      setTimeout(playVideo, 300);
+    // Gérer le changement de vidéo active
+    if (currentStory?.media_type === 'video') {
+      // Le useVideoControl se charge automatiquement de la lecture/pause
+      console.log(`📹 Story vidéo active: ${currentStory.id}`);
     }
   }, [currentStory?.id, user, isPaused]);
 
@@ -206,14 +206,8 @@ const Story = () => {
   const handleStoryClick = () => {
     setIsPaused(!isPaused);
     
-    // Gérer la pause/lecture de la vidéo
-    if (currentStory?.media_type === 'video' && videoRef.current) {
-      if (!isPaused) {
-        videoRef.current.pause();
-      } else {
-        videoRef.current.play();
-      }
-    }
+    // Le gestionnaire vidéo se charge automatiquement de la pause/lecture
+    console.log(`${!isPaused ? '⏸️' : '▶️'} Story ${isPaused ? 'reprise' : 'pausée'}`);
   };
 
   const handleLike = async () => {
@@ -377,32 +371,20 @@ const Story = () => {
                 >
                   {story.media_url ? (
                     story.media_type === 'video' ? (
-                      <video 
-                        ref={index === currentStoryIndex ? videoRef : undefined}
-                        className="w-full h-full object-cover" 
-                        autoPlay={index === currentStoryIndex && !isPaused}
-                        playsInline
-                        preload="metadata"
-                        loop={false}
-                        src={story.media_url}
-                        onLoadedData={() => {
-                          // Vidéo prête à être lue
-                          if (index === currentStoryIndex && !isPaused && videoRef.current) {
-                            videoRef.current.play().catch(console.error);
-                          }
+                      <StoryVideo
+                        story={story}
+                        isActive={index === currentStoryIndex}
+                        isPaused={isPaused}
+                        onVideoStateChange={(isPlaying) => {
+                          // Callback optionnel pour les changements d'état
+                          console.log(`Vidéo ${story.id} ${isPlaying ? 'en lecture' : 'en pause'}`);
                         }}
-                        onCanPlay={() => {
-                          // Commencer le timer quand la vidéo peut être lue
+                        onVideoEnd={index === currentStoryIndex ? goToNextStory : undefined}
+                        onVideoReady={() => {
                           if (index === currentStoryIndex && !isPaused) {
                             startTimer();
                           }
                         }}
-                        onEnded={index === currentStoryIndex ? goToNextStory : undefined}
-                        onError={(e) => {
-                          console.error('Video error:', e);
-                          console.log('Video URL:', story.media_url);
-                        }}
-                        poster={story.media_url + '#t=0.1'}
                       />
                     ) : (
                       <img 
