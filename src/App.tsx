@@ -19,6 +19,7 @@ import About from "./pages/About";
 import Auth from "./pages/Auth";
 import Channels from "./pages/Channels";
 import ChannelSubscription from "./pages/ChannelSubscription";
+import JoinChannel from "./pages/JoinChannel";
 import Notifications from "./pages/Notifications";
 import Favorites from "./pages/Favorites";
 import Settings from "./pages/Settings";
@@ -29,6 +30,7 @@ import Update from "./pages/Update";
 import UpdateChecker from "./components/UpdateChecker";
 import NotFound from "./pages/NotFound";
 import Story from "./pages/Story";
+import SmartFeed from "./pages/SmartFeed";
 
 // Create QueryClient with proper configuration
 const queryClient = new QueryClient({
@@ -53,10 +55,12 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
+              <Route path="/smart-feed" element={<SmartFeed />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/my-briefings" element={<MyBriefings />} />
               <Route path="/channels" element={<Channels />} />
               <Route path="/channel-subscription/:channelId" element={<ChannelSubscription />} />
+              <Route path="/join-channel/:shareCode" element={<JoinChannel />} />
               <Route path="/lives" element={<LiveStreams />} />
               <Route path="/live/:id" element={<LiveStream />} />
               <Route path="/brief" element={<Brief />} />

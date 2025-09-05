@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "12.2.3 (519615d)"
@@ -182,6 +182,7 @@ export type Database = {
           is_private: boolean
           name: string
           price: number
+          share_code: string | null
           subscription_code: string | null
           updated_at: string
         }
@@ -195,6 +196,7 @@ export type Database = {
           is_private?: boolean
           name: string
           price?: number
+          share_code?: string | null
           subscription_code?: string | null
           updated_at?: string
         }
@@ -208,6 +210,7 @@ export type Database = {
           is_private?: boolean
           name?: string
           price?: number
+          share_code?: string | null
           subscription_code?: string | null
           updated_at?: string
         }
@@ -555,6 +558,38 @@ export type Database = {
           },
         ]
       }
+      post_boosts: {
+        Row: {
+          boost_type: string
+          created_at: string
+          id: string
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          boost_type?: string
+          created_at?: string
+          id?: string
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          boost_type?: string
+          created_at?: string
+          id?: string
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_boosts_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       post_likes: {
         Row: {
           created_at: string
@@ -588,6 +623,91 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      post_reports: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          post_id: string
+          reason: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          post_id: string
+          reason: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          post_id?: string
+          reason?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_reports_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      post_scores: {
+        Row: {
+          author_reliability_score: number
+          content_quality_score: number
+          created_at: string
+          engagement_score: number
+          freshness_score: number
+          id: string
+          post_id: string
+          report_penalty: number
+          updated_at: string
+          visibility_score: number
+        }
+        Insert: {
+          author_reliability_score?: number
+          content_quality_score?: number
+          created_at?: string
+          engagement_score?: number
+          freshness_score?: number
+          id?: string
+          post_id: string
+          report_penalty?: number
+          updated_at?: string
+          visibility_score?: number
+        }
+        Update: {
+          author_reliability_score?: number
+          content_quality_score?: number
+          created_at?: string
+          engagement_score?: number
+          freshness_score?: number
+          id?: string
+          post_id?: string
+          report_penalty?: number
+          updated_at?: string
+          visibility_score?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_scores_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: true
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -625,6 +745,7 @@ export type Database = {
           image_url: string | null
           likes: number | null
           match_teams: string | null
+          match_time: string | null
           odds: number | null
           post_type: string | null
           prediction_text: string | null
@@ -648,6 +769,7 @@ export type Database = {
           image_url?: string | null
           likes?: number | null
           match_teams?: string | null
+          match_time?: string | null
           odds?: number | null
           post_type?: string | null
           prediction_text?: string | null
@@ -671,6 +793,7 @@ export type Database = {
           image_url?: string | null
           likes?: number | null
           match_teams?: string | null
+          match_time?: string | null
           odds?: number | null
           post_type?: string | null
           prediction_text?: string | null
@@ -902,6 +1025,39 @@ export type Database = {
         }
         Relationships: []
       }
+      user_preferences: {
+        Row: {
+          created_at: string
+          favorite_bet_types: string[] | null
+          favorite_sports: string[] | null
+          feed_preferences: Json | null
+          id: string
+          notification_settings: Json | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          favorite_bet_types?: string[] | null
+          favorite_sports?: string[] | null
+          feed_preferences?: Json | null
+          id?: string
+          notification_settings?: Json | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          favorite_bet_types?: string[] | null
+          favorite_sports?: string[] | null
+          feed_preferences?: Json | null
+          id?: string
+          notification_settings?: Json | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       vip_prono_reactions: {
         Row: {
           created_at: string
@@ -975,6 +1131,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      generate_share_code: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
       get_follower_count: {
         Args: { user_id: string }
         Returns: number
