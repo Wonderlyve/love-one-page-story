@@ -30,6 +30,8 @@ import Update from "./pages/Update";
 import UpdateChecker from "./components/UpdateChecker";
 import NotFound from "./pages/NotFound";
 import Story from "./pages/Story";
+import Ads from "./pages/Ads";
+import AdLanding from "./pages/AdLanding";
 import SmartFeed from "./pages/SmartFeed";
 
 // Create QueryClient with proper configuration
@@ -75,6 +77,8 @@ const App = () => (
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/about" element={<About />} />
               <Route path="/story" element={<Story />} />
+              <Route path="/ads" element={<Ads />} />
+              <Route path="/ad-landing/:adId" element={<AdLanding />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

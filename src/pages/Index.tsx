@@ -9,9 +9,11 @@ import BottomNavigation from '@/components/BottomNavigation';
 import SideMenu from '@/components/SideMenu';
 import NotificationIcon from '@/components/NotificationIcon';
 import { useOptimizedPosts } from '@/hooks/useOptimizedPosts';
+import { useAds } from '@/hooks/useAds';
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate, useLocation } from 'react-router-dom';
 import PostSkeleton from '@/optimization/PostSkeleton';
+import AdPost from '@/components/AdPost';
 import { supabase } from '@/integrations/supabase/client';
 import SimpleUpdatePost from '@/components/SimpleUpdatePost';
 import { useVideoOptimization } from '@/hooks/useVideoOptimization';
@@ -27,6 +29,7 @@ const Index = () => {
   const [maxOdds, setMaxOdds] = useState<string>('');
   const [showFilters, setShowFilters] = useState(false);
   const { posts, loading, initialLoading } = useOptimizedPosts();
+  const { ads } = useAds();
   const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -160,6 +163,29 @@ const Index = () => {
 
   // Obtenir la liste unique des sports pour le filtre
   const uniqueSports = Array.from(new Set(posts.map(post => post.sport).filter(Boolean)));
+
+  // Mélanger les posts et les ads de manière naturelle
+  const getMixedContent = () => {
+    const mixedContent: Array<{ type: 'post' | 'ad'; data: any }> = [];
+    
+    // Convertir les posts filtrés
+    filteredPosts.forEach((post, index) => {
+      mixedContent.push({ type: 'post', data: post });
+      
+      // Insérer une ad tous les 4 posts
+      if ((index + 1) % 4 === 0 && ads.length > 0) {
+        const adIndex = Math.floor((index + 1) / 4) - 1;
+        const ad = ads[adIndex % ads.length];
+        if (ad) {
+          mixedContent.push({ type: 'ad', data: ad });
+        }
+      }
+    });
+    
+    return mixedContent;
+  };
+
+  const mixedContent = getMixedContent();
 
   const clearFilters = () => {
     setSelectedSport('');
@@ -375,22 +401,31 @@ const Index = () => {
             </p>
           </div>
         ) : (
-          filteredPosts.map((post) => (
-            <div 
-              key={post.id} 
-              id={`post-${post.id}`}
-              className={`transition-all duration-1000 ${
-                highlightedPostId === post.id 
-                  ? 'ring-2 ring-blue-500 ring-opacity-75 shadow-lg' 
-                  : ''
-              }`}
-            >
-              <PredictionCard 
-                prediction={transformPostToPrediction(post)} 
-                onOpenModal={handleOpenModal}
-              />
-            </div>
-          ))
+          mixedContent.map((item, index) => {
+            if (item.type === 'ad') {
+              return (
+                <AdPost key={`ad-${item.data.id}`} ad={item.data} />
+              );
+            } else {
+              const post = item.data;
+              return (
+                <div 
+                  key={post.id} 
+                  id={`post-${post.id}`}
+                  className={`transition-all duration-1000 ${
+                    highlightedPostId === post.id 
+                      ? 'ring-2 ring-blue-500 ring-opacity-75 shadow-lg' 
+                      : ''
+                  }`}
+                >
+                  <PredictionCard 
+                    prediction={transformPostToPrediction(post)} 
+                    onOpenModal={handleOpenModal}
+                  />
+                </div>
+              );
+            }
+          })
         )}
 
         {loading && (
