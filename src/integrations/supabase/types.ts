@@ -14,6 +14,84 @@ export type Database = {
   }
   public: {
     Tables: {
+      ad_clicks: {
+        Row: {
+          ad_id: string
+          created_at: string
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          ad_id: string
+          created_at?: string
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          ad_id?: string
+          created_at?: string
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      ads: {
+        Row: {
+          button_action: string
+          button_text: string
+          clicks: number
+          created_at: string
+          creator_id: string
+          description: string
+          external_url: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean
+          landing_description: string | null
+          landing_images: string[] | null
+          landing_title: string | null
+          title: string
+          updated_at: string
+          views: number
+        }
+        Insert: {
+          button_action: string
+          button_text: string
+          clicks?: number
+          created_at?: string
+          creator_id: string
+          description: string
+          external_url?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          landing_description?: string | null
+          landing_images?: string[] | null
+          landing_title?: string | null
+          title: string
+          updated_at?: string
+          views?: number
+        }
+        Update: {
+          button_action?: string
+          button_text?: string
+          clicks?: number
+          created_at?: string
+          creator_id?: string
+          description?: string
+          external_url?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          landing_description?: string | null
+          landing_images?: string[] | null
+          landing_title?: string | null
+          title?: string
+          updated_at?: string
+          views?: number
+        }
+        Relationships: []
+      }
       app_versions: {
         Row: {
           apk_url: string
