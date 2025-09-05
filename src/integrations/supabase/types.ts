@@ -1084,35 +1084,47 @@ export type Database = {
       }
       vip_pronos: {
         Row: {
+          bet_type: string | null
           channel_id: string
           created_at: string
           creator_id: string
           description: string
           id: string
           image_url: string | null
+          match_teams: string | null
+          matches_data: string | null
           prediction_text: string
+          sport: string | null
           total_odds: number
           updated_at: string
         }
         Insert: {
+          bet_type?: string | null
           channel_id: string
           created_at?: string
           creator_id: string
           description: string
           id?: string
           image_url?: string | null
+          match_teams?: string | null
+          matches_data?: string | null
           prediction_text: string
+          sport?: string | null
           total_odds: number
           updated_at?: string
         }
         Update: {
+          bet_type?: string | null
           channel_id?: string
           created_at?: string
           creator_id?: string
           description?: string
           id?: string
           image_url?: string | null
+          match_teams?: string | null
+          matches_data?: string | null
           prediction_text?: string
+          sport?: string | null
           total_odds?: number
           updated_at?: string
         }
