@@ -141,11 +141,8 @@ const MultipleBetModal = ({ open, onOpenChange, prediction }: MultipleBetModalPr
 
   const formatMatchTime = (t: string) => {
     if (!t) return '';
-    const d = new Date(t);
-    if (!isNaN(d.getTime())) {
-      return d.toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
-    }
-    return t;
+    // Afficher l'heure exactement comme saisie par l'utilisateur
+    return t.replace('T', ' ').slice(0, 16);
   };
 
   return (

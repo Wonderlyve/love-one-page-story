@@ -198,13 +198,7 @@ const PredictionModal = ({ prediction, onClose }: PredictionModalProps) => {
                       <span>•</span>
                       <div className="flex items-center space-x-1">
                         <Clock className="w-3 h-3" />
-                        <span>{new Date(prediction.match_time).toLocaleString('fr-FR', {
-                          day: '2-digit',
-                          month: '2-digit',
-                          year: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit'
-                        })}</span>
+                        <span>{prediction.match_time.replace('T', ' ').slice(0, 16)}</span>
                       </div>
                     </>
                   )}
