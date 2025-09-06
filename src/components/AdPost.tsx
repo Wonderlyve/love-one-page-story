@@ -4,6 +4,8 @@ import { Badge } from '@/components/ui/badge';
 import { Eye, MousePointer, ExternalLink } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAds } from '@/hooks/useAds';
+import { supabase } from '@/integrations/supabase/client';
+import React from 'react';
 
 interface AdPostProps {
   ad: {
@@ -23,6 +25,22 @@ interface AdPostProps {
 const AdPost = ({ ad }: AdPostProps) => {
   const navigate = useNavigate();
   const { recordAdClick } = useAds();
+
+  // Tracker la vue de la publicité
+  React.useEffect(() => {
+    const recordAdView = async () => {
+      try {
+        await supabase
+          .from('ads')
+          .update({ views: ad.views + 1 })
+          .eq('id', ad.id);
+      } catch (error) {
+        console.error('Error recording ad view:', error);
+      }
+    };
+
+    recordAdView();
+  }, [ad.id, ad.views]);
 
   const handleButtonClick = async () => {
     // Enregistrer le clic
@@ -53,7 +71,7 @@ const AdPost = ({ ad }: AdPostProps) => {
   };
 
   return (
-    <Card className="w-full mb-4 relative overflow-hidden border-l-4 border-l-yellow-500 bg-gradient-to-r from-yellow-50/30 to-transparent dark:from-yellow-900/10">
+    <Card className="w-full mb-4 relative overflow-hidden bg-gradient-to-r from-yellow-50/30 to-transparent dark:from-yellow-900/10">
       <div className="absolute top-3 right-3">
         <Badge variant="secondary" className="text-xs bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300">
           Sponsorisé
